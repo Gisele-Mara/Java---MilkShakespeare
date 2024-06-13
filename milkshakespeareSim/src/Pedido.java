@@ -2,6 +2,16 @@ public class Pedido {
     private int id;
     private boolean concluido;
 
+    public String getProduto() {
+        return produto;
+    }
+
+    public void setProduto(String produto) {
+        this.produto = produto;
+    }
+
+    private String produto;
+
     public Pedido(int id) {
         this.id = id;
         this.concluido = false;
@@ -28,3 +38,4 @@ public class Pedido {
         this.concluido = concluido;
     }
 }
+
