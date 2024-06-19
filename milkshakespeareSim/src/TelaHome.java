@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
@@ -18,6 +19,7 @@ public class TelaHome extends JFrame{
     private JButton seniorButton;
     public JTable ordersTable;
     public JScrollPane ordersScroll;
+    private JPanel filaPanel;
 
     static ArrayList<Pedido> order = new ArrayList<>();
 
@@ -28,11 +30,9 @@ public class TelaHome extends JFrame{
         DefaultTableModel a = new DefaultTableModel(columnNames, 0);
         ordersTable.setModel(a);
 
-        JTableHeader header = ordersTable.getTableHeader();
+        Border border = BorderFactory.createTitledBorder("Fila");
+        filaPanel.setBorder(border);
 
-        header.setFont(new Font("SansSerif", Font.BOLD, 12)); // Optional: Customize header font
-
-        header.setPreferredSize(new Dimension(header.getWidth(), 30)); //
         ordersTable.getColumnModel().getColumn(0).setPreferredWidth(50);
 
         // Set cell renderer to center-align text in all cells
