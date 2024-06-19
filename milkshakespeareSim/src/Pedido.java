@@ -1,6 +1,18 @@
 public class Pedido {
     private int id;
     private boolean concluido;
+    private String attendant;
+    private String produto;
+
+
+    public String getAttendant() {
+        return attendant;
+    }
+
+    public void setAttendant(String attendant) {
+        this.attendant = attendant;
+    }
+
 
     public String getProduto() {
         return produto;
@@ -10,11 +22,11 @@ public class Pedido {
         this.produto = produto;
     }
 
-    private String produto;
 
     public Pedido(int id) {
         this.id = id;
         this.concluido = false;
+        this.attendant = "Waiting";
     }
 
     public void concluir(){

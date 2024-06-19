@@ -6,6 +6,7 @@ public class Milkshake extends Pedido{
 
     public Milkshake(int id, String flavour, String size){
         super(id);
+
         this.flavour = flavour;
         this.size = size;
     }

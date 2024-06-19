@@ -1,4 +1,9 @@
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumnModel;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -11,12 +16,36 @@ public class TelaHome extends JFrame{
     private JButton juniorButton;
     private JButton plenoButton;
     private JButton seniorButton;
-    private JLabel lblFila;
+    public JTable ordersTable;
+    public JScrollPane ordersScroll;
 
     static ArrayList<Pedido> order = new ArrayList<>();
-    static ArrayList<Pedido> waiting = new ArrayList<>();
+
+    static String[] columnNames = { "Id", "Product", "Attendant", "Status" };
 
     public TelaHome() {
+
+        DefaultTableModel a = new DefaultTableModel(columnNames, 0);
+        ordersTable.setModel(a);
+
+        JTableHeader header = ordersTable.getTableHeader();
+
+        header.setFont(new Font("SansSerif", Font.BOLD, 12)); // Optional: Customize header font
+
+        header.setPreferredSize(new Dimension(header.getWidth(), 30)); //
+        ordersTable.getColumnModel().getColumn(0).setPreferredWidth(50);
+
+        // Set cell renderer to center-align text in all cells
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER); // Set alignment to center
+        ordersTable.setDefaultRenderer(Object.class, centerRenderer);
+        getContentPane().add(painelPrincipal);
+
+
+        setSize(800, 620);
+        setVisible(true);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+
 
         String[] bookTitles = {
                 "The Milky Way: A Journey Through Milkshakes",
@@ -63,7 +92,7 @@ public class TelaHome extends JFrame{
             public void actionPerformed(ActionEvent e) {
 
                 order.add(new Library(order.size() + 1, bookTitles[(int) (Math.random() * (bookTitles.length - 1))]));
-            renderFila();
+            renderFila(order.getLast());
             }
         });
         milkshakeButton.addActionListener(new ActionListener() {
@@ -72,71 +101,91 @@ public class TelaHome extends JFrame{
 
                 order.add(new Milkshake((order.size() + 1), flavours[(int) (Math.random() * (flavours.length - 1))],
                         sizes[(int) (Math.random() * (sizes.length - 1))]));
-                renderFila();
+                renderFila(order.getLast());
             }
         });
         juniorButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                    int n = 0;
                 for(int i = 0; i < order.size(); i++){
-                    if(!order.get(i).isConcluido() && order.get(i) instanceof Library){
+
+                    if(!order.get(i).isConcluido() && order.get(i) instanceof Library && n ==0){
 
                         order.get(i).concluir();
-
+                        order.get(i).setAttendant("Junior");
+                        n=1;
 
                     }
-                    renderFila ();
+                    updateTable();
                     }
             }
         });
         plenoButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                int n = 0;
                 for(int i = 0; i < order.size(); i++){
-                    if(!order.get(i).isConcluido() && order.get(i) instanceof Milkshake){
+                    if(!order.get(i).isConcluido() && order.get(i) instanceof Milkshake && n ==0){
 
                         order.get(i).concluir();
-
+                        order.get(i).setAttendant("Pleno");
+                        n = 1;
                     }
-                    renderFila ();
+
+                    updateTable();
+
                 }
             }
         });
         seniorButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                int n = 0;
+                for(int i = 0; i < order.size(); i++){
 
+                    if(!order.get(i).isConcluido() && n == 0){
+
+                        order.get(i).concluir();
+                        order.get(i).setAttendant("Senior");
+
+                        n = 1;
+                    }
+
+                    updateTable();
+
+                }
             }
         });
     }
 
-    private void renderFila () {
-        String concatAll = "";
+    private void renderFila (Pedido newOrder) {
+        DefaultTableModel model = (DefaultTableModel) ordersTable.getModel();
 
-        for (int i = 0; i < order.size(); i++) {
-            waiting.add(order.get(i));
-            if (!order.get(i).isConcluido()) {
-                waiting.remove(order.get(i));
-            }
+        if (newOrder instanceof Milkshake milkShakeBar) {
+            model.addRow(new Object[] { milkShakeBar.getId(), milkShakeBar.getFlavour() + " " + milkShakeBar.getSize(), milkShakeBar.getAttendant() , milkShakeBar.isConcluido(), "" });
+        } else if (newOrder instanceof Library library) {
+            model.addRow(new Object[] { library.getId(), library.getBook(), library.getAttendant(), library.isConcluido(), "" });
         }
-        for (int i = 0; i < waiting.size(); i++) {
-
-//            if (waiting.get(i) instanceof Library) {
-
-                concatAll = concatAll.concat(String.format("ID: %s \nProduct: %s \n    \n", order.get(i).getId(), ((Library) order.get(i)).getBook()));
-//            }
-            if (waiting.get(i) instanceof Milkshake) {
-
-                concatAll = concatAll.concat(String.format("ID: %s \nProduct: %s \n    \n", order.get(i).getId(), ((Milkshake) order.get(i)).getSize()));
-
-            }
-                lblFila.setText(concatAll);
-
-        }
-
 
     }
 
+    private void updateTable (){
+        cleanTable();
+        DefaultTableModel model = (DefaultTableModel) ordersTable.getModel();
+
+        for (int i=0; i < order.size(); i++){
+            if (order.get(i) instanceof Milkshake milkShakeBar) {
+                model.addRow(new Object[] { milkShakeBar.getId(), milkShakeBar.getFlavour() + " " +  milkShakeBar.getSize(), milkShakeBar.getAttendant(), milkShakeBar.isConcluido(), "" });
+            } else if (order.get(i) instanceof Library library) {
+                model.addRow(new Object[] { library.getId(), library.getBook(), library.getAttendant(), library.isConcluido(), "" });
+            }
+        }
+
+    }
+
+    private void cleanTable() {
+        DefaultTableModel model = (DefaultTableModel) ordersTable.getModel();
+        model.setRowCount(0);
+    }
 }
