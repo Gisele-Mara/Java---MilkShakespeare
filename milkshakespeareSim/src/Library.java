@@ -1,4 +1,4 @@
-public class Library extends Pedido {
+public class Library extends Order {
 
     private String book;
 

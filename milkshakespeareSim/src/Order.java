@@ -1,4 +1,4 @@
-public class Pedido {
+public class Order {
     private int id;
     private boolean completed;
     private String attendant;
@@ -15,7 +15,7 @@ public class Pedido {
 
  
 
-    public Pedido(int id) {
+    public Order(int id) {
         this.id = id;
         this.completed = false;
         this.attendant = "Waiting";

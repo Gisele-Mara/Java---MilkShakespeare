@@ -7,7 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-public class TelaHome extends JFrame{
+public class HomeScreen extends JFrame{
 
     public JPanel painelPrincipal;
     private JButton livroButton;
@@ -19,11 +19,11 @@ public class TelaHome extends JFrame{
     public JScrollPane ordersScroll;
     private JPanel filaPanel;
 
-    static ArrayList<Pedido> order = new ArrayList<>();
+    static ArrayList<Order> order = new ArrayList<>();
 
     static String[] columnNames = { "Id", "Product", "Attendant", "Status" };
 
-    public TelaHome() {
+    public HomeScreen() {
 
         DefaultTableModel a = new DefaultTableModel(columnNames, 0);
         ordersTable.setModel(a);
@@ -106,12 +106,12 @@ public class TelaHome extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                     int n = 0;
-                for (Pedido pedido : order) {
+                for (Order order : HomeScreen.order) {
 
-                    if (!pedido.isCompleted() && pedido instanceof Library && n == 0) {
-                        String messageScreen = "ID: " + pedido.getId() + "\nBook: " + ((Library) pedido).getBook();
+                    if (!order.isCompleted() && order instanceof Library && n == 0) {
+                        String messageScreen = "ID: " + order.getId() + "\nBook: " + ((Library) order).getBook();
 
-                        serveCustomer(pedido, messageScreen, "Junior");
+                        serveCustomer(order, messageScreen, "Junior");
 
                         n = 1;
 
@@ -124,11 +124,11 @@ public class TelaHome extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 int n = 0;
-                for (Pedido pedido : order) {
+                for (Order order : HomeScreen.order) {
 
-                    if (!pedido.isCompleted() && pedido instanceof Milkshake && n == 0) {
-                        String messageScreen = "ID: " + pedido.getId() + "\nMilkshake \nFlavour: " + ((Milkshake) pedido).getFlavour() + "\nSize: " + ((Milkshake) pedido).getSize();
-                        serveCustomer(pedido, messageScreen, "Mid-Level");
+                    if (!order.isCompleted() && order instanceof Milkshake && n == 0) {
+                        String messageScreen = "ID: " + order.getId() + "\nMilkshake \nFlavour: " + ((Milkshake) order).getFlavour() + "\nSize: " + ((Milkshake) order).getSize();
+                        serveCustomer(order, messageScreen, "Mid-Level");
 
                         n = 1;
                     }
@@ -142,21 +142,21 @@ public class TelaHome extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 int n = 0;
-                for (Pedido pedido : order) {
+                for (Order order : HomeScreen.order) {
 
-                    if (!pedido.isCompleted() && n == 0) {
+                    if (!order.isCompleted() && n == 0) {
 
-                        if (pedido instanceof Milkshake) {
-                            String messageScreen = "ID: " + pedido.getId() + "\nMilkshake \nFlavour: " + ((Milkshake) pedido).getFlavour() + "\nSize: " + ((Milkshake) pedido).getSize();
+                        if (order instanceof Milkshake) {
+                            String messageScreen = "ID: " + order.getId() + "\nMilkshake \nFlavour: " + ((Milkshake) order).getFlavour() + "\nSize: " + ((Milkshake) order).getSize();
 
-                            serveCustomer(pedido, messageScreen, "Senior");
+                            serveCustomer(order, messageScreen, "Senior");
                             n = 1;
 
 
                         }
-                        if (pedido instanceof Library) {
-                            String messageScreen ="ID: " + pedido.getId() +"\n Book: " + ((Library) pedido).getBook();
-                            serveCustomer(pedido, messageScreen, "Senior");
+                        if (order instanceof Library) {
+                            String messageScreen ="ID: " + order.getId() +"\n Book: " + ((Library) order).getBook();
+                            serveCustomer(order, messageScreen, "Senior");
                             n = 1;
 
                         }
@@ -170,7 +170,7 @@ public class TelaHome extends JFrame{
         });
     }
 
-    private void renderFila (Pedido newOrder) {
+    private void renderFila (Order newOrder) {
         DefaultTableModel model = (DefaultTableModel) ordersTable.getModel();
 
         if (newOrder instanceof Milkshake milkShakeBar) {
@@ -200,13 +200,14 @@ public class TelaHome extends JFrame{
         model.setRowCount(0);
     }
 
-    private void serveCustomer (Pedido finishOrder, String messageScreen, String attendant){
+    private void serveCustomer (Order finishOrder, String messageScreen, String attendant){
         String[] options = { "Serve", "Cancel" };
 
         JFrame frame = new JFrame();
-        frame.getContentPane().setBackground(Color.blue);
-        frame.setBounds(300, 300, 500, 350);
+        frame.getContentPane().setBackground(Color.LIGHT_GRAY);
+        frame.setBounds(300, 300, 300, 300);
         frame.setVisible(true);
+        frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
 
         var selection = JOptionPane.showOptionDialog(frame, messageScreen, "Finish Order",
@@ -215,6 +216,9 @@ public class TelaHome extends JFrame{
             if (selection == 0) {
                finishOrder.finish();
                finishOrder.setAttendant(attendant);
+            } if (selection == 1) {
+            frame.setVisible(false);
+            frame.dispose();
             }
 
 

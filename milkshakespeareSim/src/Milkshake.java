@@ -1,5 +1,5 @@
 
-public class Milkshake extends Pedido{
+public class Milkshake extends Order {
 
     private String flavour;
     private String size;
