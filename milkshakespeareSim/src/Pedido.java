@@ -1,8 +1,7 @@
 public class Pedido {
     private int id;
-    private boolean concluido;
+    private boolean completed;
     private String attendant;
-    private String produto;
 
 
     public String getAttendant() {
@@ -14,23 +13,16 @@ public class Pedido {
     }
 
 
-    public String getProduto() {
-        return produto;
-    }
-
-    public void setProduto(String produto) {
-        this.produto = produto;
-    }
-
+ 
 
     public Pedido(int id) {
         this.id = id;
-        this.concluido = false;
+        this.completed = false;
         this.attendant = "Waiting";
     }
 
-    public void concluir(){
-        this.setConcluido(true);
+    public void finish(){
+        this.setCompleted(true);
     }
 
 
@@ -42,12 +34,12 @@ public class Pedido {
         this.id = id;
     }
 
-    public boolean isConcluido() {
-        return concluido;
+    public boolean isCompleted() {
+        return completed;
     }
 
-    public void setConcluido(boolean concluido) {
-        this.concluido = concluido;
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
     }
 }
 

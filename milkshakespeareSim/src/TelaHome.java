@@ -2,8 +2,6 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -108,28 +106,30 @@ public class TelaHome extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                     int n = 0;
-                for(int i = 0; i < order.size(); i++){
+                for (Pedido pedido : order) {
 
-                    if(!order.get(i).isConcluido() && order.get(i) instanceof Library && n ==0){
+                    if (!pedido.isCompleted() && pedido instanceof Library && n == 0) {
+                        String messageScreen = "ID: " + pedido.getId() + "\nBook: " + ((Library) pedido).getBook();
 
-                        order.get(i).concluir();
-                        order.get(i).setAttendant("Junior");
-                        n=1;
+                        serveCustomer(pedido, messageScreen, "Junior");
+
+                        n = 1;
 
                     }
                     updateTable();
-                    }
+                }
             }
         });
         plenoButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int n = 0;
-                for(int i = 0; i < order.size(); i++){
-                    if(!order.get(i).isConcluido() && order.get(i) instanceof Milkshake && n ==0){
+                for (Pedido pedido : order) {
 
-                        order.get(i).concluir();
-                        order.get(i).setAttendant("Pleno");
+                    if (!pedido.isCompleted() && pedido instanceof Milkshake && n == 0) {
+                        String messageScreen = "ID: " + pedido.getId() + "\nMilkshake \nFlavour: " + ((Milkshake) pedido).getFlavour() + "\nSize: " + ((Milkshake) pedido).getSize();
+                        serveCustomer(pedido, messageScreen, "Mid-Level");
+
                         n = 1;
                     }
 
@@ -142,14 +142,25 @@ public class TelaHome extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 int n = 0;
-                for(int i = 0; i < order.size(); i++){
+                for (Pedido pedido : order) {
 
-                    if(!order.get(i).isConcluido() && n == 0){
+                    if (!pedido.isCompleted() && n == 0) {
 
-                        order.get(i).concluir();
-                        order.get(i).setAttendant("Senior");
+                        if (pedido instanceof Milkshake) {
+                            String messageScreen = "ID: " + pedido.getId() + "\nMilkshake \nFlavour: " + ((Milkshake) pedido).getFlavour() + "\nSize: " + ((Milkshake) pedido).getSize();
 
-                        n = 1;
+                            serveCustomer(pedido, messageScreen, "Senior");
+                            n = 1;
+
+
+                        }
+                        if (pedido instanceof Library) {
+                            String messageScreen ="ID: " + pedido.getId() +"\n Book: " + ((Library) pedido).getBook();
+                            serveCustomer(pedido, messageScreen, "Senior");
+                            n = 1;
+
+                        }
+
                     }
 
                     updateTable();
@@ -163,9 +174,9 @@ public class TelaHome extends JFrame{
         DefaultTableModel model = (DefaultTableModel) ordersTable.getModel();
 
         if (newOrder instanceof Milkshake milkShakeBar) {
-            model.addRow(new Object[] { milkShakeBar.getId(), milkShakeBar.getFlavour() + " " + milkShakeBar.getSize(), milkShakeBar.getAttendant() , milkShakeBar.isConcluido(), "" });
+            model.addRow(new Object[] { milkShakeBar.getId(), milkShakeBar.getFlavour() + " -  " + milkShakeBar.getSize(), milkShakeBar.getAttendant() , milkShakeBar.isCompleted(), "" });
         } else if (newOrder instanceof Library library) {
-            model.addRow(new Object[] { library.getId(), library.getBook(), library.getAttendant(), library.isConcluido(), "" });
+            model.addRow(new Object[] { library.getId(), library.getBook(), library.getAttendant(), library.isCompleted(), "" });
         }
 
     }
@@ -176,9 +187,9 @@ public class TelaHome extends JFrame{
 
         for (int i=0; i < order.size(); i++){
             if (order.get(i) instanceof Milkshake milkShakeBar) {
-                model.addRow(new Object[] { milkShakeBar.getId(), milkShakeBar.getFlavour() + " " +  milkShakeBar.getSize(), milkShakeBar.getAttendant(), milkShakeBar.isConcluido(), "" });
+                model.addRow(new Object[] { milkShakeBar.getId(), milkShakeBar.getFlavour() + " - " +  milkShakeBar.getSize(), milkShakeBar.getAttendant(), milkShakeBar.isCompleted(), "" });
             } else if (order.get(i) instanceof Library library) {
-                model.addRow(new Object[] { library.getId(), library.getBook(), library.getAttendant(), library.isConcluido(), "" });
+                model.addRow(new Object[] { library.getId(), library.getBook(), library.getAttendant(), library.isCompleted(), "" });
             }
         }
 
@@ -187,5 +198,25 @@ public class TelaHome extends JFrame{
     private void cleanTable() {
         DefaultTableModel model = (DefaultTableModel) ordersTable.getModel();
         model.setRowCount(0);
+    }
+
+    private void serveCustomer (Pedido finishOrder, String messageScreen, String attendant){
+        String[] options = { "Serve", "Cancel" };
+
+        JFrame frame = new JFrame();
+        frame.getContentPane().setBackground(Color.blue);
+        frame.setBounds(300, 300, 500, 350);
+        frame.setVisible(true);
+
+
+        var selection = JOptionPane.showOptionDialog(frame, messageScreen, "Finish Order",
+                    0, 3, new ImageIcon("img/milkshake_2234936.png"), options, options[0]);
+
+            if (selection == 0) {
+               finishOrder.finish();
+               finishOrder.setAttendant(attendant);
+            }
+
+
     }
 }
